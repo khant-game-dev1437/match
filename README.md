@@ -2,9 +2,9 @@
 
 ## General informations
 
- We need rows and columns to create Dynamic Grids
- Both Rows and Columns cannot be odd number since it is card matching game. If rows * columns = odd number, user will never win the game since one card image will be left and no cards to match.
- So, if rows * columns = odd number, return 'INVALID GRID SIZE'
+- We need rows and columns to create Dynamic Grids
+- Both Rows and Columns cannot be odd number since it is card matching game. If rows * columns = odd number, user will never win the game since one card image will be left and no cards to match.
+- So, if rows * columns = odd number, return 'INVALID GRID SIZE'
 
 ## GridInitialize.ts
 
