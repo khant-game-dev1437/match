@@ -35,13 +35,15 @@ export class Caculate extends Component {
     saveNodePos = [];
 
 
-    protected onLoad(): void {
-        this.sceneNumber = window.Global.sceneNumber;
-
-        this.sceneLabel.string = String(`Scene ${this.sceneNumber + 1}`);
+    protected onLoad(): void { 
+        
     }
 
     start() {
+
+        this.sceneNumber = window.Global.sceneNumber;
+
+        this.sceneLabel.string = String(`Scene ${this.sceneNumber + 1}`);
         Message.on(Events.CARD_CACULATE, this.caculateCard, this);
     }
 

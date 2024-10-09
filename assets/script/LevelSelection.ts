@@ -1,11 +1,16 @@
-import { _decorator, Component, director, JsonAsset, Node, resources, Scene } from 'cc';
+import { _decorator, Button, Component, director, instantiate, JsonAsset, Label, Node, Prefab, resources, Scene } from 'cc';
 import { SceneNames } from './EnumDefine';
+import { LevelSelector } from './LevelSelector';
 const { ccclass, property } = _decorator;
 
 @ccclass('LevelSelection')
 export class LevelSelection extends Component {
    
-   
+    @property(Prefab)
+    levelPrefab = null;
+    
+    @property(Node)
+    levelContent = null;
 
     protected onLoad(): void {
         // Define the Global object if it does not already exist
@@ -21,15 +26,23 @@ export class LevelSelection extends Component {
                 return;
             }
             window.Global.levelData = jsonAsset.json;
+
+            this.createLevelMenu();
         });
     }
     
 
-    selectLevel(customData, lvl) {
-        if(window.Global.levelData != null) {
-            window.Global.sceneNumber = Number(lvl);
-            director.loadScene(SceneNames.GameScene);
-        }
+    createLevelMenu() {
+        const levelCounts = window.Global.levelData.grid.length;
+        
+        for(let i = 0; i < levelCounts; i++) {
+            const levelObj = instantiate(this.levelPrefab);
+            levelObj.getComponent(LevelSelector).levelIndex = i
+            levelObj.getChildByName('Label').getComponent(Label).string = i + 1;
+            this.levelContent.addChild(levelObj);
+
+            console.log('customdaaaa ', levelObj.getComponent(Button).customData)
+        }   
     }
 }
 
