@@ -24,7 +24,7 @@
 - Enum message events for notification
 
 ## MessageManager.ts
-
+- Observer Pattern
 - This emits a message to let the system knows that if something important is finished.
 - on() - Listen to event
 - dispatchEvent() - emit a message
