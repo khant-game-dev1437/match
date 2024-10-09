@@ -24,7 +24,15 @@ export class GridInitialize extends Component {
     startX = 0;
     startY = 0;
     
-    start() {
+    protected onLoad(): void {
+       this.gridInitialize();
+    }
+
+    gridInitialize() {
+        const sceneNumber = window.Global.sceneNumber;
+        this.rows = window.Global.levelData.grid[sceneNumber].rows;
+        this.columns = window.Global.levelData.grid[sceneNumber].columns;
+
         if((this.rows * this.columns) % 2 != 0) {
             this.lbl_systemInfo.string = 'INVALID GRID SIZE';
             return;

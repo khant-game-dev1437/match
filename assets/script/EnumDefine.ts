@@ -8,5 +8,5 @@ export enum CardProperties {
 
 export enum SceneNames {
     MainMenu = 'MainMenu',
-    Scene = 'Scene'
+    GameScene = 'GameScene'
 }

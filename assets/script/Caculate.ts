@@ -36,7 +36,9 @@ export class Caculate extends Component {
 
 
     protected onLoad(): void {
-        this.sceneLabel.string = String(`Scene ${this.sceneNumber}`);
+        this.sceneNumber = window.Global.sceneNumber;
+
+        this.sceneLabel.string = String(`Scene ${this.sceneNumber + 1}`);
     }
 
     start() {
@@ -74,7 +76,7 @@ export class Caculate extends Component {
                 destroyCards.then(() => {
                     this.scheduleOnce(()=> { // To prevent immediate scene change, Let user knows that he wins
                         if (this.node.getComponent(GridInitialize).cardParent.children.length <= 0) {
-                            if (this.sceneNumber >= 3) {
+                            if (this.sceneNumber >= 2) {
                                 const ts = this.node.getComponent(GridInitialize);
                                 ts.lbl_systemInfo.string = 'GAME OVER'
 
@@ -83,7 +85,8 @@ export class Caculate extends Component {
                                 },1, 3)
                                 return;
                             }
-                            director.loadScene(`${SceneNames.Scene}${this.sceneNumber + 1}`);
+                            window.Global.sceneNumber += 1;
+                            director.loadScene(SceneNames.GameScene);
                         }
                     }, 1)
                 });                
@@ -103,7 +106,7 @@ export class Caculate extends Component {
     }
 
     restartCurrentScene() {
-        director.loadScene(`${SceneNames.Scene}${this.sceneNumber}`);
+        director.loadScene(SceneNames.GameScene);
     }
 
     saveData() {
@@ -124,19 +127,19 @@ export class Caculate extends Component {
     }
 
     loadData() {
-
         
         const ts = this.node.getComponent(GridInitialize);
 
         let loadSceneNum = JSON.parse(localStorage.getItem('SceneNum'));
         
-        if(loadSceneNum == '' || loadSceneNum == null || loadSceneNum == undefined) {
+        if(isNaN(loadSceneNum) || loadSceneNum < 0) {
+            console.log("loadSceneNum ", loadSceneNum)
             ts.lbl_systemInfo.string = 'NO DATA TO LOAD';
             return;
         }
 
-        this.sceneNumber = loadSceneNum;
-        this.sceneLabel.string = String(`Scene ${this.sceneNumber}`);
+        this.sceneNumber = Number(loadSceneNum);
+        this.sceneLabel.string = String(`Scene ${this.sceneNumber + 1}`);
 
         const destroyCards = new Promise<void>((resolve) => {
             ts.cardParent.destroyAllChildren();
@@ -187,6 +190,10 @@ export class Caculate extends Component {
             this.turnCountLabel.string = `Turn Counts: ${this.turnCount}`;
             ts.cardParent.position = loadCardParentPos; // To make cards in center
         })
+    }
+
+    backToMenu() {
+        director.loadScene(SceneNames.MainMenu);
     }
 }
 

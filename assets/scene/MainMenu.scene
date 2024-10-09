@@ -716,7 +716,7 @@
     "component": "",
     "_componentId": "678bfzreBdIkaLkO6QzXDRw",
     "handler": "selectLevel",
-    "customEventData": "1"
+    "customEventData": "0"
   },
   {
     "__type__": "cc.Node",
@@ -1045,7 +1045,7 @@
     "component": "",
     "_componentId": "678bfzreBdIkaLkO6QzXDRw",
     "handler": "selectLevel",
-    "customEventData": "2"
+    "customEventData": "1"
   },
   {
     "__type__": "cc.Node",
@@ -1374,7 +1374,7 @@
     "component": "",
     "_componentId": "678bfzreBdIkaLkO6QzXDRw",
     "handler": "selectLevel",
-    "customEventData": "3"
+    "customEventData": "2"
   },
   {
     "__type__": "cc.UITransform",
