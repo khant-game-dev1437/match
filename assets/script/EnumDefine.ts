@@ -5,3 +5,8 @@ export enum CardProperties {
     Huguie = 4,
     SoldierBoy = 5
 }
+
+export enum SceneNames {
+    MainMenu = 'MainMenu',
+    Scene = 'Scene'
+}

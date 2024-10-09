@@ -1,6 +1,6 @@
-import { _decorator, AudioClip, AudioSource, Button, Component, Node, resources, Sprite, SpriteFrame, tween, Vec3, } from 'cc';
+import { _decorator, AudioSource, Button, Component, Node, resources, Sprite, SpriteFrame, tween, Vec3, } from 'cc';
 import { Message } from './MessageManager';
-import { Events } from './MessageEvent.ts/Events';
+import { Events } from './MessageEvent/Events';
 
 const { ccclass, property } = _decorator;
 
@@ -48,9 +48,9 @@ export class CardProperty extends Component {
                     }
                 },
                 onComplete: () => {
-                    setTimeout(() => {  // Use setTimeout to prevent immediate match (for user experience)
+                    this.scheduleOnce(() => {  // Use setTimeout to prevent immediate match (for user experience)
                         Message.dispatchEvent(Events.CARD_CACULATE, [this.suit ,this.node]);    
-                    }, 1000);
+                    }, 1);
                 }
         })
         .start()

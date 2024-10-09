@@ -1,8 +1,9 @@
-import { _decorator, AudioSource, Component, director, instantiate, Label, Sprite } from 'cc';
-import { Events } from './MessageEvent.ts/Events';
+import { _decorator, AudioSource, Component, director, instantiate, Label, macro, Scene, Sprite } from 'cc';
+import { Events } from './MessageEvent/Events';
 import { Message } from './MessageManager';
 import { CardProperty } from './CardProperty';
 import { GridInitialize } from './GridInitialize';
+import { SceneNames } from './EnumDefine';
 
 const { ccclass, property } = _decorator;
 
@@ -76,9 +77,13 @@ export class Caculate extends Component {
                             if (this.sceneNumber >= 3) {
                                 const ts = this.node.getComponent(GridInitialize);
                                 ts.lbl_systemInfo.string = 'GAME OVER'
+
+                                this.schedule(()=> {
+                                    director.loadScene(SceneNames.MainMenu);    
+                                },1, 3)
                                 return;
                             }
-                            director.loadScene(`Scene${this.sceneNumber + 1}`);
+                            director.loadScene(`${SceneNames.Scene}${this.sceneNumber + 1}`);
                         }
                     }, 1)
                 });                
@@ -98,7 +103,7 @@ export class Caculate extends Component {
     }
 
     restartCurrentScene() {
-        director.loadScene(`Scene${this.sceneNumber}`);
+        director.loadScene(`${SceneNames.Scene}${this.sceneNumber}`);
     }
 
     saveData() {
