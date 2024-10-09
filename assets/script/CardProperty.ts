@@ -18,8 +18,6 @@ export class CardProperty extends Component {
     @property(AudioSource)
     public audioSource = null;
 
-    
-    
     start() {
         this.createCardImage();
         this.node.setScale(-1,1,1);
@@ -28,7 +26,9 @@ export class CardProperty extends Component {
     createCardImage() {
         const self = this;
         resources.load(`sprite/${this.suit}/spriteFrame`, SpriteFrame, (err, res) => {
-            if(err) { console.log(err) };
+            if(err) { 
+                return;
+            };
             self.frontImg = res;
         })
     }
@@ -42,22 +42,19 @@ export class CardProperty extends Component {
         },
         {
                 easing: 'linear',
-                onUpdate: (target: Node, ratio) => {
+                onUpdate: (target: Node) => {
                     if (target.getScale().x >= 0) {
                         this.node.getComponent(Sprite).spriteFrame = this.frontImg;
                     }
                 },
                 onComplete: () => {
-                    setTimeout(() => {
+                    setTimeout(() => {  // Use setTimeout to prevent immediate match (for user experience)
                         Message.dispatchEvent(Events.CARD_CACULATE, [this.suit ,this.node]);    
                     }, 1000);
-                    
                 }
         })
         .start()
         this.node.getComponent(Button).interactable = false;
-
-        
     }
 
     invertCard() {

@@ -24,8 +24,8 @@ export class Caculate extends Component {
     @property(AudioSource)
     public audioSource = null;
 
-    resultArr = [];
-    nodeArr = [];
+    suitList = [];
+    cardList = [];
 
     totalScore = 0;
     turnCount = 0;
@@ -34,15 +34,12 @@ export class Caculate extends Component {
     saveNodePos = [];
 
 
-    start() {
-        Message.on(Events.CARD_CACULATE, this.caculateCard, this);
-        this.sceneLabel.string = String(`Scene${this.sceneNumber}`);
+    protected onLoad(): void {
+        this.sceneLabel.string = String(`Scene ${this.sceneNumber}`);
     }
 
-    loadMp3 () {
-        // resources.loadDir('sound', AudioSource[], (err, data) => {
-
-        // })
+    start() {
+        Message.on(Events.CARD_CACULATE, this.caculateCard, this);
     }
 
     protected onDestroy(): void {
@@ -51,57 +48,57 @@ export class Caculate extends Component {
 
     caculateCard(event, data) {
         
+        this.suitList.push(data[0]);
+        this.cardList.push(data[1]);
 
-        this.resultArr.push(data[0]);
-        this.nodeArr.push(data[1]);
-
-        if (this.resultArr.length == 2) {
-            if (this.resultArr[0] === this.resultArr[1]) {
+        if (this.suitList.length == 2) {
+            if (this.suitList[0] === this.suitList[1]) { // if first suit and second suit equal
                 this.audioSource.play();
                 this.totalScore++;
                 this.scoreLabel.string = `Score: ${this.totalScore}`;
-                this.nodeArr.forEach(e => {
-                    e.destroy();
+
+                const destroyCards = new Promise<void>((resolve) => {
+                    this.cardList.forEach(e => {
+                        e.destroy();
+                    });
                     
-                    this.resultArr = [];
-                    this.nodeArr = [];
-                })
-                setTimeout(() => {
-                    try {
+                    this.suitList = [];
+                    this.cardList = [];
+                    
+                    this.scheduleOnce(() => {
+                        resolve();
+                    }, 0);
+                });
+                
+                destroyCards.then(() => {
+                    this.scheduleOnce(()=> { // To prevent immediate scene change, Let user knows that he wins
                         if (this.node.getComponent(GridInitialize).cardParent.children.length <= 0) {
-                            if(this.sceneNumber >= 3) {
+                            if (this.sceneNumber >= 3) {
                                 const ts = this.node.getComponent(GridInitialize);
                                 ts.lbl_systemInfo.string = 'GAME OVER'
                                 return;
                             }
-                            
-                            director.loadScene(`Scene${this.sceneNumber + 1}`);    
-                        }    
-                    }catch(err) {
-
-                    }
+                            director.loadScene(`Scene${this.sceneNumber + 1}`);
+                        }
+                    }, 1)
+                });                
                     
-                }, 1000);
             } else {
-                this.nodeArr.forEach(e => {
+                // Set to its original scale
+                this.cardList.forEach(e => {
                     e.getComponent(CardProperty).invertCard();
-                    this.resultArr = [];
-                    this.nodeArr = [];
-                })
+                });
+
+                this.suitList = [];
+                this.cardList = [];
             }
             this.turnCount++;
             this.turnCountLabel.string = `Turn Counts: ${this.turnCount}`;
         }
-
-       
     }
 
     restartCurrentScene() {
         director.loadScene(`Scene${this.sceneNumber}`);
-    }
-
-    update(deltaTime: number) {
-        
     }
 
     saveData() {
@@ -122,30 +119,38 @@ export class Caculate extends Component {
     }
 
     loadData() {
+
+        
         const ts = this.node.getComponent(GridInitialize);
 
         let loadSceneNum = JSON.parse(localStorage.getItem('SceneNum'));
-        console.log("loadSceneNum ", loadSceneNum);
+        
         if(loadSceneNum == '' || loadSceneNum == null || loadSceneNum == undefined) {
             ts.lbl_systemInfo.string = 'NO DATA TO LOAD';
             return;
         }
-        this.sceneNumber = loadSceneNum;
-        this.sceneLabel.string = String(`Scene${this.sceneNumber}`);
 
-         ts.cardParent.destroyAllChildren();
-        
-        setTimeout(() => {
+        this.sceneNumber = loadSceneNum;
+        this.sceneLabel.string = String(`Scene ${this.sceneNumber}`);
+
+        const destroyCards = new Promise<void>((resolve) => {
+            ts.cardParent.destroyAllChildren();
             
             this.totalScore = 0;
             this.turnCount = 0;
     
             this.saveNodeNames = [];
             this.saveNodePos = [];
-            this.resultArr = [];
-            this.nodeArr = [];
+            this.suitList = [];
+            this.cardList = [];
 
-          
+            this.scheduleOnce(() => {
+                resolve();
+            }, 0);
+        });
+         
+        
+        destroyCards.then(()=> {
 
             let loadNodeNames = JSON.parse(localStorage.getItem('NodeNames'));
             let loadNodePos = JSON.parse(localStorage.getItem('NodePos'));
@@ -175,10 +180,8 @@ export class Caculate extends Component {
 
             this.scoreLabel.string = `Score: ${this.totalScore}`;
             this.turnCountLabel.string = `Turn Counts: ${this.turnCount}`;
-           
-            ts.cardParent.position = loadCardParentPos;
-        }, 1000);
-        
+            ts.cardParent.position = loadCardParentPos; // To make cards in center
+        })
     }
 }
 
