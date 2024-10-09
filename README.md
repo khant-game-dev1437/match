@@ -33,7 +33,7 @@
 ## Caculate.ts
 
 - This function caculates scoring point, winning moment, turning count, saving data, loading data and restarting scene.
-- calculatetCard() - this function creates turning count and winning condition.
+- calculateCard() - this function creates turning count and winning condition.
 - restartCurrentScene() - This function restarts the scene.
 - saveData() - This saves data even if user left the game. User can load the current data if the data is saved in localStorage - Same as PlayerPref.
 - loadData() - This loads the saved data in localStorage. This loads card names, card positions, card parent position, turning counts and score points and scene number.
